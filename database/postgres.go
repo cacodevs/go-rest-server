@@ -47,6 +47,6 @@ func (repo *PostgresRepository) GetUserById(ctx context.Context, id int64) (*mod
 	return &user, err
 }
 
-func (repo *PostgresRepository) Close() error {
-	return repo.Close()
+func (repo *PostgresRepository) Close() error{
+    return repo.Close()
 }
