@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/cacodevs/go-rest-server/handlers"
-	"github.com/cacodevs/go-rest-server/server"
+	"github.com/cecardev/go-rest-server/handlers"
+	"github.com/cecardev/go-rest-server/server"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 )

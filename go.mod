@@ -1,4 +1,4 @@
-module github.com/cacodevs/go-rest-server
+module github.com/cecardev/go-rest-server
 
 go 1.19
 
