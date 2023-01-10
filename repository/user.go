@@ -7,7 +7,7 @@ import (
 )
 
 type UserRepository interface {
-	InsertUser(ctx context.Context, user *models.User) error
+	InsertUser(ctx context.Context, user *models.User) (id int64,err error)
 	GetUserById(ctx context.Context, id int64) (*models.User, error)
     Close() error
 }
@@ -18,7 +18,7 @@ func SetRepository(repository UserRepository) {
 	implementation = repository
 }
 
-func InsertUser(ctx context.Context, user *models.User) error {
+func InsertUser(ctx context.Context, user *models.User) (id int64,err error) {
 	return implementation.InsertUser(ctx, user)
 }
 

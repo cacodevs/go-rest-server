@@ -3,12 +3,10 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
 
 	"github.com/cecardev/go-rest-server/models"
 	"github.com/cecardev/go-rest-server/repository"
 	"github.com/cecardev/go-rest-server/server"
-	"github.com/segmentio/ksuid"
 )
 
 type SignUpRequest struct {
@@ -29,20 +27,17 @@ func SignUpHandler(s server.Server) http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		id, err := ksuid.NewRandom()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		idInt, _ := strconv.ParseInt(id.String(), 10, 0)
 		var user = models.User{
 			Email:    request.Email,
 			Password: request.Password,
-			Id:       idInt,
 		}
 
-		err = repository.InsertUser(r.Context(), &user)
+        id,err := repository.InsertUser(r.Context(), &user)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -50,7 +45,7 @@ func SignUpHandler(s server.Server) http.HandlerFunc {
 		}
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(SignUpResponse{
-			Id:    user.Id,
+			Id:    id,
 			Email: user.Email,
 		})
 

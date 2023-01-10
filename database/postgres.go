@@ -6,7 +6,7 @@ import (
 	"log"
 
 	"github.com/cecardev/go-rest-server/models"
-    _"github.com/lib/pq"
+	_ "github.com/lib/pq"
 )
 
 type PostgresRepository struct {
@@ -21,9 +21,16 @@ func NewPostgresRepository(url string) (*PostgresRepository, error) {
 	return &PostgresRepository{db}, nil
 }
 
-func (repo *PostgresRepository) InsertUser(ctx context.Context, user *models.User) error {
-	_, err := repo.db.ExecContext(ctx, "INSERT INTO users (email, password) VALUES ($1, $2)", user.Email, user.Password)
-	return err
+func (repo *PostgresRepository) InsertUser(ctx context.Context, user *models.User) (id int64,err error) {
+    lastInsertId:=0
+    query:="INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id"
+	err = repo.db.QueryRowContext(ctx,query , user.Email, user.Password).Scan(&lastInsertId)
+
+    if err != nil {
+        log.Fatal(err)
+    }
+    return int64(lastInsertId), err
+
 }
 
 func (repo *PostgresRepository) GetUserById(ctx context.Context, id int64) (*models.User, error) {
@@ -48,6 +55,6 @@ func (repo *PostgresRepository) GetUserById(ctx context.Context, id int64) (*mod
 	return &user, err
 }
 
-func (repo *PostgresRepository) Close() error{
-    return repo.Close()
+func (repo *PostgresRepository) Close() error {
+	return repo.Close()
 }
