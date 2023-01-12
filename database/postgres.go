@@ -21,20 +21,20 @@ func NewPostgresRepository(url string) (*PostgresRepository, error) {
 	return &PostgresRepository{db}, nil
 }
 
-func (repo *PostgresRepository) InsertUser(ctx context.Context, user *models.User) (id int64,err error) {
-    lastInsertId:=0
-    query:="INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id"
-	err = repo.db.QueryRowContext(ctx,query , user.Email, user.Password).Scan(&lastInsertId)
+func (repo *PostgresRepository) InsertUser(ctx context.Context, user *models.User) (id int64, err error) {
+	lastInsertId := 0
+	query := "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id"
+	err = repo.db.QueryRowContext(ctx, query, user.Email, user.Password).Scan(&lastInsertId)
 
-    if err != nil {
-        log.Fatal(err)
-    }
-    return int64(lastInsertId), err
+	if err != nil {
+		log.Fatal(err)
+	}
+	return int64(lastInsertId), err
 
 }
 
 func (repo *PostgresRepository) GetUserById(ctx context.Context, id int64) (*models.User, error) {
-	rows, err := repo.db.QueryContext(ctx, "SELECT id, username, email FROM users WHERE id =$1", id)
+	rows, err := repo.db.QueryContext(ctx, "SELECT id,  email FROM users WHERE id =$1", id)
 	defer func() {
 		err = rows.Close()
 		if err != nil {
@@ -80,6 +80,3 @@ func (repo *PostgresRepository) GetUserByEmail(ctx context.Context, email string
 	}
 	return &user, err
 }
-
-
-

@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/cecardev/go-rest-server/handlers"
+	"github.com/cecardev/go-rest-server/middleware"
 	"github.com/cecardev/go-rest-server/server"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -31,11 +32,13 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-    s.Start(BindRoutes)
+	s.Start(BindRoutes)
 }
 
 func BindRoutes(s server.Server, r *mux.Router) {
+	r.Use(middleware.CheckAuthMiddleware(s))
 	r.HandleFunc("/", handlers.HomeHandler(s)).Methods(http.MethodGet)
-    r.HandleFunc("/signup", handlers.SignUpHandler(s)).Methods(http.MethodPost)
-    r.HandleFunc("/login", handlers.LoginHandler(s)).Methods(http.MethodPost)
+	r.HandleFunc("/signup", handlers.SignUpHandler(s)).Methods(http.MethodPost)
+	r.HandleFunc("/login", handlers.LoginHandler(s)).Methods(http.MethodPost)
+	r.HandleFunc("/me", handlers.MeHandler(s)).Methods(http.MethodGet)
 }
